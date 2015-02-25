@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Responder</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="message_button">Καταχώρηση μηνύματος</string>
+    <string name="enable_button">Ενεργοποίηση</string>
+    <string name="disable_button">Απενεργοποίηση</string>
+
+</resources>
