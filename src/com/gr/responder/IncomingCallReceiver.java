@@ -10,7 +10,6 @@ import android.util.Log;
 public class IncomingCallReceiver extends BroadcastReceiver {
 	
 	private static boolean isRinging = false;
-	private static boolean isOfHook = false;
 	private static String incomingNumber;
 	private int count2 = 0;
 	
@@ -29,19 +28,18 @@ public class IncomingCallReceiver extends BroadcastReceiver {
 			Log.d("DEBUG", "state is ringing");
 		}
 		if(state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-			isOfHook = true;
+			isRinging = false;
 			Log.d("DEBUG", "state is of hook");
 		}
 		if(state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-			if(isRinging == true && isOfHook == false) {
+			if(isRinging) {
 				Intent intent = new Intent(arg0, RespondService.class);
 				intent.putExtra(RespondService.INCOMING_NUMBER, incomingNumber);
 				arg0.startService(intent);
 				Log.d("DEBUG", "state is idle");
 			}
 		}
-		Log.d("DEBUG", "isRinging = " + isRinging + ", isOfHook = " + isOfHook + ", state = " + state);
-		isOfHook = false;
+		Log.d("DEBUG", "isRinging = " + isRinging + ", state = " + state);
 	}
 	
 }
