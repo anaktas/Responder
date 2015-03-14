@@ -50,6 +50,7 @@ public class RespondService extends IntentService {
 	}
 	
 	public String getSMSText() {
+		Log.d("DEBUG", "I am inside of geSMSText");
 		String smsText = "";
 		Cursor cursor = null;
 		
@@ -60,6 +61,7 @@ public class RespondService extends IntentService {
 			if(cursor.moveToFirst())
 				smsText = cursor.getString(0);
 			cursor.close();
+			Log.d("DEBUG", "smsText = " + smsText);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -70,14 +72,18 @@ public class RespondService extends IntentService {
 	}
 	
 	public void sendSMSText(String incomingNumber, String smsText) throws ParseException {
+		Log.d("DEBUG", "I am inside of sendSMSText");
 		String callTime = "";
 		String currentTime = getDateTime();
+		Log.d("DEBUG", "currentTime = " + currentTime);
 		Cursor cursor = null;
 		SQLiteDatabase responderDatabase;
 		responderDatabase = openOrCreateDatabase("responder.db", SQLiteDatabase.CREATE_IF_NECESSARY, null);
-		cursor = responderDatabase.rawQuery("SELECT max(calltime) FROM tbl_call_history WHERE number=" + incomingNumber, null);
-		if(cursor.moveToFirst()) {
+		cursor = responderDatabase.rawQuery("SELECT calltime FROM tbl_call_history WHERE number = ? ORDER BY calltime DESC LIMIT 1", new String[] {incomingNumber});
+		Log.d("DEBUG", "count the results: " + cursor.getCount());
+		if(cursor != null && cursor.moveToFirst()) {
 			callTime = cursor.getString(0);
+			Log.d("DEBUG", "callTime = " + callTime);
 			boolean sendFlag = okToSend(callTime, currentTime);
 			if(sendFlag) {
 				ContentValues values = new ContentValues();
@@ -97,13 +103,15 @@ public class RespondService extends IntentService {
 			smsManager.sendTextMessage(incomingNumber, null, "Auto response: " + smsText, null, null);
 			showNotification(incomingNumber);
 		}
+		cursor.close();
 	}
 	
 	public String getDateTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-        Date date = new Date();
+		Log.d("DEBUG", "I am inside of getDateTime");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+		Date date = new Date();
         
-        return dateFormat.format(date);
+		return dateFormat.format(date).toString();
 	}
 	
 	public void showNotification(String incomingNumber) {
@@ -120,26 +128,33 @@ public class RespondService extends IntentService {
 		notifier.notify(NOTIFICATION_ID, notify);
 	}
 	
-	public boolean okToSend(String callTime, String currentTime) throws ParseException {
+	public boolean okToSend(String callTime, String currentTime) {
+		Log.d("DEBUG", "I am inside of okToSend");
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date then = null;
 		Date now = null;
 		boolean sendFlag = false;
 	
-		then = format.parse(callTime);
-		now = format.parse(currentTime);
-		long diff = now.getTime() - then.getTime();
-		long diffMinutes = diff / (60 * 1000) % 60;
-		long diffHours = diff / (60 * 60 * 1000) % 24;
-		long diffDays = diff / (24 * 60 * 60 * 1000);
-		if(diffDays == 0 && diffHours == 0) {
-			if(diffMinutes >= 5) {
-				sendFlag = true;
+		try {
+			then = format.parse(callTime);
+			now = format.parse(currentTime);
+			long diff = now.getTime() - then.getTime();
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			if(diffDays == 0 && diffHours == 0) {
+				if(diffMinutes >= 5) {
+					sendFlag = true;
+				} else
+					sendFlag = false;
 			} else
-				sendFlag = false;
-		} else
-			sendFlag = true;
+				sendFlag = true;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+		Log.d("DEBUG", "sendFlag = " + sendFlag);
 		return sendFlag;
 	}
 

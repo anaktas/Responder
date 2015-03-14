@@ -17,13 +17,13 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 	
 	private SQLiteDatabase responderDatabase;
-	private static final String CREATE_SMS_TABLE = "CREATE TABLE IF NOT EXIST tbl_sms (" 
+	private static final String CREATE_SMS_TABLE = "CREATE TABLE IF NOT EXISTS tbl_sms ( " 
 			+ "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-			+ "message TEXT);";
-	private static final String CREATE_CALL_HISTORY = "CREATE TABLE IF NOT EXIST tbl_call_history ("
+			+ "message TEXT )";
+	private static final String CREATE_CALL_HISTORY = "CREATE TABLE IF NOT EXISTS tbl_call_history ("
 			+ "id INTEGER PRIMARY KEY AUTOINCREMENT,"
 			+ "number TEXT,"
-			+ "calltime DATETIME);";
+			+ "calltime DATETIME )";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +48,10 @@ public class MainActivity extends Activity {
 		try {
 			responderDatabase = openOrCreateDatabase("responder.db", SQLiteDatabase.CREATE_IF_NECESSARY, null);
 			responderDatabase.execSQL(CREATE_SMS_TABLE);
-			responderDatabase.execSQL(CREATE_CALL_HISTORY);
 			ContentValues values = new ContentValues();
 			values.put("message", "DummyValue");
 			long dummyID = responderDatabase.insert("tbl_sms", null, values);
+			responderDatabase.execSQL(CREATE_CALL_HISTORY);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
