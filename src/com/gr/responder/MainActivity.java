@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {
 	
@@ -64,14 +65,25 @@ public class MainActivity extends Activity {
 		Toast.makeText(MainActivity.this, "Το μήνυμά σας καταχωρήθηκε.", Toast.LENGTH_LONG).show();
 	}
 	
-	public void enableIncomingCallReceiver(View view) {
+	public void toggleChecked(View view) {
+		//final ToggleButton toggle = (ToggleButton) findViewById(R.id.toggleButton);
+		boolean isOn = ((ToggleButton) view).isChecked();
+		
+		if(isOn) {
+			enableIncomingCallReceiver();
+		} else {
+			disableIncomingCallReceiver();
+		}
+	}
+	
+	public void enableIncomingCallReceiver() {
 		ComponentName receiver = new ComponentName(this, IncomingCallReceiver.class);
 		PackageManager pm = this.getPackageManager();
 		pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 		Toast.makeText(this, "H εφαρμογή ενεργοποιήθηκε.", Toast.LENGTH_LONG).show();
 	}
 	
-	public void disableIncomingCallReceiver(View view) {
+	public void disableIncomingCallReceiver() {
 		ComponentName receiver = new ComponentName(this, IncomingCallReceiver.class);
 		PackageManager pm = this.getPackageManager();
 		pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);

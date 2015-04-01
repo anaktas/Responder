@@ -18,27 +18,6 @@
     </EditText>
 
     <Button
-        android:id="@+id/buttonDisable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button2"
-        android:onClick="disableIncomingCallReceiver"
-        android:text="@string/disable_button" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/buttonMsg"
-        android:layout_marginTop="29dp"
-        android:onClick="enableIncomingCallReceiver"
-        android:text="@string/enable_button" />
-
-    <Button
         android:id="@+id/buttonMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,5 +27,17 @@
         android:layout_marginTop="87dp"
         android:onClick="updateButton"
         android:text="@string/message_button" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonMsg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:checked="false"
+        android:textOff="@string/disable_button"
+        android:textOn="@string/enable_button" 
+        android:onClick="toggleChecked"/>
 
 </RelativeLayout>
